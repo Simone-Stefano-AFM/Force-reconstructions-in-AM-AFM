@@ -3,7 +3,7 @@
 @author: Simone Benaglia
 @author: Stefano Chiodini
 
-If you use the following code please cite: "Quantification of solvation forces with AFM"
+If you use the following code please cite: "Quantification of solvation forces with amplitude modulation AFM"
 """
 
 import numpy as np

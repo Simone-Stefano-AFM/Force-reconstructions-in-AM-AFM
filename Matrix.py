@@ -23,7 +23,7 @@ D1 = np.loadtxt("force.txt")[0, :]
 
 
 # interpolation of data
-n = 7000 # at least 1000
+n = 7000 # at least 1000. For high values better 64 bit than 32 bit versions of Python
 
 Dmin_interp = np.linspace(np.min(Dmin), np.max(Dmin), n)
 

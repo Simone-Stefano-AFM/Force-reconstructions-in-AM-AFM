@@ -60,7 +60,7 @@ defl1 = np.flipud(deflection[:, 1]*1.0e-9)
 
 
 # interpolation of data
-N = 1000
+N = 1000 # At least 1000. For high values better 64 bit than 32 bit versions of Python
 zc2 = np.linspace (np.min(zc1), np.max(zc1), N)
 
 interpolation1 = si.interp1d(zc1, Amp, kind = "slinear")

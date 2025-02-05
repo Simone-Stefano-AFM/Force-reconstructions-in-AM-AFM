@@ -6,6 +6,9 @@
 If you use the following code please cite: "Quantification of solvation forces with amplitude modulation AFM"
 """
 
+# Matrix.py updated 05.02.2025
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as si
@@ -18,12 +21,10 @@ from scipy.signal import savgol_filter
 k_Holscher = np.loadtxt("k_Holscher.txt")[1, :]
 Dmin = np.loadtxt("k_Holscher.txt")[0, :]
 amplitude = np.loadtxt("Amp.txt")[1, :]
-dforce = np.loadtxt("force.txt")[1, :]
-D1 = np.loadtxt("force.txt")[0, :]
 
 
 # interpolation of data
-n = 7000 # at least 1000. For high values better 64 bit than 32 bit versions of Python
+n = 3000 # at least 1000. For high values better 64 bit than 32 bit versions of Python
 
 Dmin_interp = np.linspace(np.min(Dmin), np.max(Dmin), n)
 
@@ -60,17 +61,22 @@ for i in range (0, n):
     
     if b1[i] < np.max(a1):
 
-        jmax = np.max(np.where(a1 < b1[i])[0]) 
+        jmax = np.max(np.where(a1 < b1[i])[0]) - 1
         
         if i == 0:
             
-            mat[0][0] = 0.5*step*ker(a1[0], a1[0] + step/2, A_interp[0]) 
+            mat[i][0] = 0.5*step*ker(a1[i], a1[i] + step/2, A_interp[0]) 
             
             mat[0][jmax] = 0.5*step*ker(a1[0], a1[jmax] + step/2, A_interp[0])
+#            mat[i][jmax] = 0.
             
             for j in range (1, jmax):
                 
-                mat[0][j] = step*ker(a1[0], a1[j] + step/2, A_interp[0])
+                mat[i][j] = step*ker(a1[i], a1[j] + step/2, A_interp[0])
+                
+            for j in range (jmax, n):
+                
+                mat[i][j] = 0.
         
         else: 
             
@@ -94,39 +100,49 @@ for i in range (0, n):
                 if j == jmax:
                     
                     mat[i][j] = 0.5*step*ker(a1[i], a1[j] + step/2, A_interp[i])
-                    
+#                    mat[i][j] = 0.
                 else:    
             
                     mat[i][j] = 0.
         
 
     elif b1[i] > np.max(a1):
-
-        for j in range (0, i):
-
-            if i == 0:
-                
-                mat[i][j] = 0.5*step*ker(a1[0], a1[0] + step/2, A_interp[0]) 
         
-            else: 
+        if i == 0:
+            
+            mat[i][0] = 0.5*step*ker(a1[0], a1[0] + step/2, A_interp[0])
+            
+            for j in range (i,n-1):
                 
+                mat[i][j] = step*ker(a1[0], a1[j] + step/2, A_interp[0])
+                
+            for j in range (n-1, n):
+                
+                mat[i][j] = 0.5*step*ker(a1[0], a1[j] + step/2, A_interp[0])
+        
+            
+        else:
+            
+            for j in range (0, i):
+
                 mat[i][j] = 0.       
         
         
-        for j in range(i, n):
-            
-            if j == n-1:
+            for j in range(i, n):
                 
-                mat[i][j] = 0.5*step*ker(a1[i], a1[j] + step/2, A_interp[i])
+                if j == n-1:
+                    
+                    mat[i][j] = 0.5*step*ker(a1[i], a1[j] + step/2, A_interp[i])
+        
+                elif j == i: 
+                    
+                    mat[i][j] = 0.5*step*ker(a1[i], a1[j] + step/2, A_interp[i])
+                    
+                elif j > i and j != n-1:
+                    
+                    mat[i][j] = step*ker(a1[i], a1[j] + step/2, A_interp[i])
 
-            elif j == i and i != 0 : 
-                
-                mat[i][j] = 0.5*step*ker(a1[i], a1[j] + step/2, A_interp[i])
-                
-            elif j > i and j != n-1:
-                
-                mat[i][j] = step*ker(a1[i], a1[j] + step/2, A_interp[i])
-
+         
           
 mat[np.isnan(mat)] = 0.
 
@@ -140,7 +156,6 @@ smooth_force_matrix = savgol_filter(force_matrix, 251, 3) # to be checked every 
 
 # final plots
 plt.plot(a1, smooth_force_matrix, label = 'Matrix', color = 'blue', linewidth = 3)
-plt.plot(D1, dforce, label = 'Force', color = 'purple', linewidth = 3)
 plt.legend()
 
 

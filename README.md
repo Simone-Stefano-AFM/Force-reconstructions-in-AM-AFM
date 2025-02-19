@@ -12,5 +12,5 @@ Matrix.py, instead, is a mathematical method that has been developed to overcome
 ---
 
 ## Additional Information and How to Cite
-Additional information on the tool (Matrix.py) can be found in the original article "Quantification of solvation forces with amplitude modulation AFM", at the link https://www.sciencedirect.com/science/article/pii/S0021979725001456#da005.
+Additional information on the tool (Matrix.py) can be found in the original article "Quantification of solvation forces with amplitude modulation AFM", at the link https://www.sciencedirect.com/science/article/pii/S0021979725001456?via%3Dihub.
 If you use the matrix-based algorithm, please cite the article above (doi.org/10.1016/j.jcis.2025.01.131).
